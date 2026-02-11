@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Upload Issue – Let's Fix It</title>
+    <title>Tweet Analysis Issue</title>
 
     <style type="text/css">
         body {
@@ -27,15 +27,15 @@
         }
         .header {
             background: linear-gradient(135deg, #1e293b 0%, #111827 100%);
-            padding: 52px 30px 40px;
+            padding: 48px 30px 36px;
             text-align: center;
         }
         .header h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 800;
             line-height: 1.1;
-            letter-spacing: -0.6px;
+            letter-spacing: -0.5px;
             color: #f1f5f9;
         }
         .content {
@@ -43,51 +43,53 @@
             font-size: 16px;
             line-height: 1.7;
             color: #cbd5e1;
+            text-align: center;
         }
         .content h2 {
-            margin: 0 0 20px;
+            margin: 0 0 24px;
             font-size: 26px;
             font-weight: 700;
-            color: #ff6b6b;
+            color: #f472b6;
         }
-        .error-pill {
+        .status-pill {
             display: inline-flex;
             align-items: center;
-            background: rgba(255, 107, 107, 0.15);
-            color: #ff6b6b;
+            background: rgba(249, 115, 22, 0.12);
+            color: #f97316;
             font-weight: 600;
             font-size: 15px;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border-radius: 999px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(255, 107, 107, 0.25);
+            margin: 0 auto 32px;
+            border: 1px solid rgba(249, 115, 22, 0.2);
         }
         .info-box {
             background: #0f172a;
             border: 1px solid #1e293b;
             border-radius: 16px;
             padding: 24px;
-            margin: 32px 0;
+            margin: 32px auto;
+            max-width: 480px;
             font-size: 15px;
             color: #cbd5e1;
+            text-align: left;
         }
         .info-box strong {
             color: #f1f5f9;
         }
         .button-table {
-            margin: 44px auto;
+            margin: 40px auto 0;
         }
         .button {
             display: inline-block;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #00b8ff 100%);
             color: #0f1115 !important;
             font-weight: 700;
             padding: 16px 48px;
             text-decoration: none;
             border-radius: 999px;
             font-size: 17px;
-            line-height: 1;
-            box-shadow: 0 8px 24px rgba(255, 107, 107, 0.25);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.25);
         }
         .footer {
             background: #0d1117;
@@ -98,21 +100,16 @@
             border-top: 1px solid #1e293b;
         }
         .footer a {
-            color: #ff6b6b;
+            color: #00d4ff;
             text-decoration: none;
             font-weight: 500;
-        }
-        .small {
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.6;
         }
 
         @media only screen and (max-width: 620px) {
             .container { margin: 16px !important; border-radius: 20px; }
-            .header { padding: 44px 24px 32px !important; }
+            .header { padding: 40px 24px 32px !important; }
             .content { padding: 32px 24px !important; }
-            .button { width: 100% !important; box-sizing: border-box; text-align: center; padding: 16px 32px !important; }
+            .button { width: 100% !important; padding: 16px 32px !important; }
         }
     </style>
 </head>
@@ -126,7 +123,7 @@
                 <!-- Header -->
                 <tr>
                     <td class="header">
-                        <h1>Upload Encountered an Issue</h1>
+                        <h1>Analysis Could Not Complete</h1>
                     </td>
                 </tr>
 
@@ -134,41 +131,42 @@
                 <tr>
                     <td class="content">
 
-                        <div class="error-pill">
-                            <span style="margin-right:10px; font-size:20px;">⚠️</span> Something Went Wrong
+                        <div class="status-pill">
+                            <span style="margin-right:10px; font-size:20px;">⚠</span> Issue Detected
                         </div>
 
                         <h2>Hi <span th:text="${userName}">Tamarakro</span>,</h2>
 
-                        <p>We couldn't complete the upload of your tweets this time. Sorry for the inconvenience — your files are safe and nothing was lost on your device.</p>
-
-                        <p>Common reasons include connection problems, invalid file format/structure, size limits, or a temporary issue on our side.</p>
+                        <p>We ran into a problem while trying to analyze your tweets against the deletion criteria you selected.</p>
 
                         <div class="info-box">
-                            <strong>Quick next steps to fix this:</strong><br><br>
-                            • Check that your JSON file is valid JSON — you can use an online validator like jsonlint.com or jsonformatter.org<br>
-                            • Make sure it follows the correct structure expected by the platform (check our documentation or sample file for required fields and format)<br>
-                            • Verify your internet connection is stable and try uploading again<br>
-                            • Ensure the file size is within the allowed limit and the file isn't corrupted<br>
-                            • If it still fails, our support team can usually resolve it quickly
+                            <strong>What happened:</strong><br><br>
+                            The process stopped before it could finish. This can happen for several harmless reasons, such as:<br><br>
+                            • A temporary connection issue<br>
+                            • The file being very large or taking longer than expected<br>
+                            • An unexpected format in some tweet data
                         </div>
+
+                        <p>No tweets were modified or deleted — your library is completely safe.</p>
+
+                        <p>We recommend trying the analysis again from the dashboard. It usually works on the second attempt.</p>
 
                         <table role="presentation" class="button-table" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td align="center">
-                                    <a th:href="${appUrl}" class="button" target="_blank">
-                                        Retry Upload Now →
+                                    <a th:href="${dashboardUrl}" class="button" target="_blank">
+                                        Try Analysis Again →
                                     </a>
                                 </td>
                             </tr>
                         </table>
 
                         <p style="margin: 40px 0 0;">
-                            We're here to help make this smooth.<br>
-                            Feel free to reply to this email, send the file, or reach out in the app — happy to assist!
+                            If this keeps happening, just reply to this email with a quick note — we'll look into it right away.<br>
+                            Sorry for the inconvenience.
                         </p>
 
-                        <p style="margin-top: 28px;">Best regards,<br>The TweetPlatform Team</p>
+                        <p style="margin-top: 28px;">Best,<br>The TweetPlatform Team</p>
 
                     </td>
                 </tr>
@@ -177,7 +175,7 @@
                 <tr>
                     <td class="footer">
                         <p>© 2026 TweetPlatform • <a th:href="${appUrl}" target="_blank">Go to App</a></p>
-                        <p class="small">Sent because of an upload attempt on <span th:text="${uploadDate}">February 11, 2026</span>.</p>
+                        <p>Attempted analysis on <span th:text="${attemptDate}">February 11, 2026</span></p>
                     </td>
                 </tr>
             </table>

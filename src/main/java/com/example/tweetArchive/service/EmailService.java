@@ -9,25 +9,32 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
-    public void sendTweetUploadConfirmation(
+    public void sendTweetUploadFeedback(
             String toEmail,
             String userName,
-            String date
+            String template
     ) throws MessagingException {
 
         Context context = new Context();
         context.setVariable("userName", userName);
         context.setVariable("appUrl", "https://yourapp.com/dashboard");
-        context.setVariable("uploadDate",date);
+        context.setVariable("updateDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
 
-        String htmlContent = templateEngine.process("successful-batch-notification", context);
-
+        String htmlContent;
+        if ("success".equals(template)) {
+             htmlContent = templateEngine.process("successful-batch-notification", context);
+        }else {
+             htmlContent = templateEngine.process("unsuccessful-batch-notification", context);
+        }
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -37,24 +44,39 @@ public class EmailService {
 
         mailSender.send(message);
     }
-
-    public void sendTweetUploadFailure(
+    public void sendTweetAnalysisFeedback(
             String toEmail,
+            long flaggedTweets,
+            long totalTweetCount,
             String userName,
-            String attemptDate
+            String template
     ) throws MessagingException {
-        Context context = new Context();
-        context.setVariable("userName", userName);
-        context.setVariable("appUrl", "https://yourapp.com/dashboard");
-        context.setVariable("attemptDate", attemptDate);
 
-        String htmlContent = templateEngine.process("unsuccessful-batch-notification", context);
+        Context context1 = new Context();
+        context1.setVariable("userName",     userName);
+        context1.setVariable("totalTweets",  totalTweetCount);
+        context1.setVariable("flaggedCount", flaggedTweets);
+        context1.setVariable("reviewUrl",    "/dashboard/review");
+        context1.setVariable("analysisDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
+        context1.setVariable("appUrl",       "https://yourapp.com/dashboard");
 
+        Context context2 = new Context();
+        context2.setVariable("userName",     userName);
+        context2.setVariable("dashboardUrl", "/dashboard/review");
+        context2.setVariable("attemptDate",  LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
+        context2.setVariable("appUrl",       "https://yourapp.com/dashboard");
+
+        String htmlContent;
+        if ("success".equals(template)) {
+            htmlContent = templateEngine.process("successful-analysis-notification", context1);
+        }else {
+            htmlContent = templateEngine.process("unsuccessful-batch-notification", context2);
+        }
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(toEmail);
-        helper.setSubject("Issue with Your Recent Tweet Upload");
+        helper.setSubject("Tweets Have Been Successfully Upload Update!");
         helper.setText(htmlContent, true);
 
         mailSender.send(message);

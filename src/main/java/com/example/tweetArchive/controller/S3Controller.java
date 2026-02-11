@@ -41,7 +41,7 @@ public class S3Controller {
         String jwtToken = authHeader.substring(7);
         List<String> userInfo = jwtUtils.getUserInfo(jwtToken);
         String user_id = userInfo.get(0);
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = user_id+"_"+StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String contentType = file.getContentType();
         long fileSize = file.getSize();
         InputStream inputStream = file.getInputStream();
