@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/s3")
+@RequestMapping("v1/api/s3")
 public class S3Controller {
 
     @Value("${cloud.aws.s3.bucket}")

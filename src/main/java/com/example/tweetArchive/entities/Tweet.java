@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "tweets")
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Data
 public class Tweet {
     @Id
     @Column(name = "tweet_id", length = 255)
@@ -26,7 +27,7 @@ public class Tweet {
     private String tweetUrl;
 
     @Column(name = "user_id", nullable = false)
-    private String userId;          // Changed to String as requested
+    private String userId;
 
     @Column(name = "user_twitter_name", length = 50, nullable = false)
     private String userTwitterName;
@@ -40,7 +41,15 @@ public class Tweet {
     @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
 
-    public Tweet(String idStr, LocalDateTime createdAt, String tweetUrl, String userId, String username, String cleanedTweet, int i) {
+
+    public Tweet(String tweetId, LocalDateTime createdAt, String tweetUrl, String userId, String userTwitterName, String cleanedTweet, Integer deleteFlag) {
+        this.tweetId = tweetId;
+        this.createdAt = createdAt;
+        this.tweetUrl = tweetUrl;
+        this.userId = userId;
+        this.userTwitterName = userTwitterName;
+        this.cleanedTweet = cleanedTweet;
+        this.deleteFlag = deleteFlag;
     }
 }
 

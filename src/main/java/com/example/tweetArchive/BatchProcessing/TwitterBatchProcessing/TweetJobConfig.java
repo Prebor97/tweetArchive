@@ -128,8 +128,8 @@ public class TweetJobConfig {
                 .processor(tweetProcessor)
                 .writer(tweetWriter)
                 .faultTolerant()
-                .retryLimit(3)
-                .retry(Exception.class)
+//                .retryLimit(3)
+//                .retry(Exception.class)
                 .skip(Exception.class)
                 .skipLimit(100)
                 .build();
