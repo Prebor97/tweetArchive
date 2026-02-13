@@ -15,6 +15,12 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("v1/api/s3")
+@CrossOrigin(
+        origins = "ec2-16-170-163-247.eu-north-1.compute.amazonaws.com:3000",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
+        allowedHeaders = "*",
+        maxAge = 3600
+)
 public class S3Controller {
 
     @Value("${cloud.aws.s3.bucket}")

@@ -6,13 +6,16 @@ import com.example.tweetArchive.dto.response.UserResponse;
 import com.example.tweetArchive.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/api/auth")
+@CrossOrigin(
+        origins = "ec2-16-170-163-247.eu-north-1.compute.amazonaws.com:3000",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
+        allowedHeaders = "*",
+        maxAge = 3600
+)
 public class UserController {
     private final UserService userService;
 

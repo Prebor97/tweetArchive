@@ -26,7 +26,7 @@ public class EmailService {
 
         Context context = new Context();
         context.setVariable("userName", userName);
-        context.setVariable("appUrl", "https://yourapp.com/dashboard");
+        context.setVariable("appUrl", "http://localhost:3000/dashboard");
         context.setVariable("updateDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
 
         String htmlContent;
@@ -39,7 +39,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(toEmail);
-        helper.setSubject("Your Tweets Have Been Successfully Uploaded!");
+        helper.setSubject("Uploaded Update!!!!");
         helper.setText(htmlContent, true);
 
         mailSender.send(message);
@@ -58,13 +58,13 @@ public class EmailService {
         context1.setVariable("flaggedCount", flaggedTweets);
         context1.setVariable("reviewUrl",    "/dashboard/review");
         context1.setVariable("analysisDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
-        context1.setVariable("appUrl",       "https://yourapp.com/dashboard");
+        context1.setVariable("appUrl",       "https://yourdomain.com/analysis");
 
         Context context2 = new Context();
         context2.setVariable("userName",     userName);
-        context2.setVariable("dashboardUrl", "/dashboard/review");
+        context2.setVariable("dashboardUrl", "\"http://localhost:3000/dashboard");
         context2.setVariable("attemptDate",  LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
-        context2.setVariable("appUrl",       "https://yourapp.com/dashboard");
+        context2.setVariable("appUrl",       "http://localhost:3000/dashboard?tab=flagged");
 
         String htmlContent;
         if ("success".equals(template)) {
@@ -76,7 +76,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(toEmail);
-        helper.setSubject("Tweets Have Been Successfully Upload Update!");
+        helper.setSubject("Analysis Update!!!!");
         helper.setText(htmlContent, true);
 
         mailSender.send(message);

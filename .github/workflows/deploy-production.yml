@@ -50,8 +50,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION:           ${{ secrets.AWS_REGION }}
           AWS_S3_BUCKET:        ${{ secrets.AWS_S3_BUCKET }}
+          MAILUSERNAME:         ${{ secrets.MAILUSERNAME }}
+          MAILPASSWORD:         ${{ secrets.MAILPASSWORD }}
+          GROKAPIKEY:           ${{  secrets.GROKAPIKEY}}
 
-          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_JPA_HIBERNATE_DDL_AUTO: ${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -67,5 +70,9 @@ jobs:
             AWS_REGION,
             AWS_S3_BUCKET,
             SPRING_JPA_HIBERNATE_DDL_AUTO,
-            SPRING_PROFILES_ACTIVE
+            SPRING_PROFILES_ACTIVE,
+            MAILUSERNAME,
+            MAILPASSWORD,
+            GROKAPIKEY
+
           script_file: deploy.sh

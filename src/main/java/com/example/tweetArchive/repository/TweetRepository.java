@@ -1,6 +1,8 @@
 package com.example.tweetArchive.repository;
 
 import com.example.tweetArchive.entities.Tweet;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +16,6 @@ import java.util.Optional;
 public interface TweetRepository extends JpaRepository<Tweet, String> {
     Optional<Tweet> findFirstByUserId(String id);
 
-    // 1. Count tweets flagged for deletion (deleteFlag = 1) for a specific user
     long countByUserIdAndDeleteFlag(String userId, Integer deleteFlag);
 
     List<Tweet> findByUserIdAndDeleteFlag(String userId, Integer deleteFlag);
@@ -24,4 +25,17 @@ public interface TweetRepository extends JpaRepository<Tweet, String> {
     List<Tweet> findByUserIdAndDeleteFlagOrderByCreatedAtDesc(String userId, Integer deleteFlag);
 
     boolean existsByUserIdAndDeleteFlag(String userId, Integer deleteFlag);
+
+    Page<Tweet> findByUserIdAndDeleteFlagOrderByCreatedAtDesc(
+            String userId,
+            Integer deleteFlag,
+            Pageable pageable
+    );
+
+    Page<Tweet> findByUserIdOrderByCreatedAtDesc(
+            String userId,
+            Pageable pageable
+    );
+
+    void deleteByTweetIdAndUserId(String tweetId, String userId);
 }
