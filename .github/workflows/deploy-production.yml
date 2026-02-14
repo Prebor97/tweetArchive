@@ -26,29 +26,40 @@ jobs:
       - name: Build JAR with Maven (skip tests)
         run: mvn clean package -DskipTests
 
-      # ────────────────────────────────────────────────
-      # Debug: Confirm the JAR actually exists
-      # ────────────────────────────────────────────────
       - name: Debug - List target directory contents
         if: always()
         run: |
           pwd
           ls -la target/ || echo "target/ folder not found"
           find target/ -name "*.jar" || echo "No .jar files found"
+          ls -la deploy.sh || echo "deploy.sh not found in root"
 
-      - name: Copy JAR + deploy script to EC2
+      - name: Copy JAR to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           port: 22
-          source: target/tweetArchive-0.0.1-SNAPSHOT.jar,deploy.sh
-          target: "/home/${{ secrets.EC2_USER }}/app"
+          source: "target/tweetArchive-0.0.1-SNAPSHOT.jar"
+          target: "/home/${{ secrets.EC2_USER }}/app/"
           strip_components: 1
           debug: true
           overwrite: true
-          rm: false
+          timeout: 60s
+
+      - name: Copy deploy script to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          port: 22
+          source: "deploy.sh"
+          target: "/home/${{ secrets.EC2_USER }}/app/"
+          strip_components: 0
+          debug: true
+          overwrite: true
           timeout: 60s
 
       - name: Deploy to EC2 (run deploy script with env vars)
