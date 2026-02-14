@@ -37,7 +37,7 @@ SERVER_SSL_KEY_STORE_PASSWORD=${SERVER_SSL_KEY_STORE_PASSWORD}
 SERVER_SSL_KEY_STORE_TYPE=${SERVER_SSL_KEY_STORE_TYPE}
 EOF
 
-# Secure the environment file (important!)
+# Secure the environment file (important!) na wa
 chmod 600 "$ENV_FILE"
 echo "Environment file created and secured"
 
