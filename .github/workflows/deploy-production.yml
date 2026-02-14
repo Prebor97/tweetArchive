@@ -26,6 +26,17 @@ jobs:
       - name: Build JAR with Maven (skip tests)
         run: mvn clean package -DskipTests
 
+      # ────────────────────────────────────────────────
+      # Debug: Confirm the JAR actually exists
+      # This is the #1 reason for "tar: empty archive"
+      # ────────────────────────────────────────────────
+      - name: Debug - List target directory contents
+        if: always()
+        run: |
+          pwd
+          ls -la target/ || echo "target/ folder not found"
+          find target/ -name "*.jar" || echo "No .jar files found"
+
       - name: Copy JAR + deploy script to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -34,12 +45,16 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           port: 22
           source: |
-            target/*.jar
-            deploy.sh
+            "target/*.jar"
+            "deploy.sh"
           target: "/home/${{ secrets.EC2_USER }}/app"
           strip_components: 1
+          debug: true                     # ← very useful for troubleshooting
+          overwrite: true                 # optional: overwrite existing files
+          rm: false                       # keep old files unless you want cleanup
 
       - name: Deploy to EC2 (run deploy script with env vars)
+        if: success()                     # only run if previous step succeeded
         uses: appleboy/ssh-action@v1.0.3
         env:
           DB_URL:               ${{ secrets.DB_URL }}
@@ -52,9 +67,10 @@ jobs:
           AWS_S3_BUCKET:        ${{ secrets.AWS_S3_BUCKET }}
           MAILUSERNAME:         ${{ secrets.MAILUSERNAME }}
           MAILPASSWORD:         ${{ secrets.MAILPASSWORD }}
-          GROKAPIKEY:           ${{  secrets.GROKAPIKEY}}
-
+          GROKAPIKEY:           ${{ secrets.GROKAPIKEY }}
           SPRING_JPA_HIBERNATE_DDL_AUTO: ${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }}
+          # Add this if you want to control profile from GitHub (optional)
+          SPRING_PROFILES_ACTIVE: ${{ vars.SPRING_PROFILES_ACTIVE || 'prod' }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -69,10 +85,9 @@ jobs:
             AWS_SECRET_ACCESS_KEY,
             AWS_REGION,
             AWS_S3_BUCKET,
-            SPRING_JPA_HIBERNATE_DDL_AUTO,
-            SPRING_PROFILES_ACTIVE,
             MAILUSERNAME,
             MAILPASSWORD,
-            GROKAPIKEY
-
+            GROKAPIKEY,
+            SPRING_JPA_HIBERNATE_DDL_AUTO,
+            SPRING_PROFILES_ACTIVE
           script_file: deploy.sh
