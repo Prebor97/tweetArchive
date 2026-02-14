@@ -27,9 +27,10 @@ import java.util.List;
 @RestController
 @RequestMapping("v1/api/tweets")
 @CrossOrigin(
-        origins = "ec2-16-170-163-247.eu-north-1.compute.amazonaws.com:3000",
+        origins = "https://tweet-analyzer-three.vercel.app",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
         allowedHeaders = "*",
+        allowCredentials = "true",
         maxAge = 3600
 )
 public class TwitterController {
