@@ -141,7 +141,7 @@ sudo journalctl -u "$SERVICE_NAME" --no-pager --lines=40 || echo "No journal log
 #   sleep 5
 # done
 # echo "Warning: Health check timed out after 60s"
-# exit 1
+# exit 1 to end
 
 echo "Deployment finished. Check logs if needed:"
 echo "  sudo journalctl -u $SERVICE_NAME -f"
