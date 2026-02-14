@@ -145,7 +145,7 @@ sudo journalctl -u "$SERVICE_NAME" --no-pager --lines=40 || echo "No journal log
 #   fi
 #   echo "Attempt $i/12 - still starting..."
 #   sleep 5
-# done deploying
+# done deploying app
 # echo "Warning: Health check timed out after 60s"
 
 echo "Deployment finished. Check logs if needed:"
