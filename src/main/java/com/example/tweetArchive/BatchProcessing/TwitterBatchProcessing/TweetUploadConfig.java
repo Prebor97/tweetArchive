@@ -8,8 +8,7 @@ import com.example.tweetArchive.entities.Tweet;
 import com.example.tweetArchive.repository.TweetRepository;
 import com.example.tweetArchive.repository.UserInfoRepository;
 import jakarta.persistence.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -36,16 +35,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Configuration
-public class TweetJobConfig {
+@Slf4j
+public class TweetUploadConfig {
     public static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
-    private static final Logger log = LoggerFactory.getLogger(TweetJobConfig.class);
     private final AmazonS3 s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public TweetJobConfig(AmazonS3 s3Client) {
+    public TweetUploadConfig(AmazonS3 s3Client) {
         this.s3Client = s3Client;
     }
 
@@ -128,8 +127,8 @@ public class TweetJobConfig {
                 .processor(tweetProcessor)
                 .writer(tweetWriter)
                 .faultTolerant()
-                .retryLimit(3)
-                .retry(Exception.class)
+//                .retryLimit(3)
+//                .retry(Exception.class)
                 .skip(Exception.class)
                 .skipLimit(100)
                 .build();

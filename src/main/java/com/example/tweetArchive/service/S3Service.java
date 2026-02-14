@@ -18,6 +18,7 @@ public class S3Service {
 
     private final AmazonS3 s3Client;
     private final UserInfoRepository repository;
+
     @Value("${cloud.aws.region.static}")
     private String region;
 
@@ -36,7 +37,6 @@ public class S3Service {
         if (exists) {
             log.info("Removing existing file from bucket............................................................");
             s3Client.deleteObject(bucketName, keyName);
-            // Optional: log it
             log.info("Deleted existing object: bucket={}, key={}", bucketName, keyName);
         }
 
@@ -45,6 +45,8 @@ public class S3Service {
         userInfo.setFileLocation(keyName);
         userInfo.setUpdatedAt(LocalDateTime.now());
         repository.save(userInfo);
+
+        log.info("Successfully uploaded object: bucket={}, key={}", bucketName, keyName);
 
         String message = exists
                 ? "Existing file replaced and new file uploaded: " + keyName

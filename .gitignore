@@ -31,13 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-# Spring Boot configuration files (local/dev/prod secrets, profiles, etc.)
-application.properties
-application.yml
-application-*.properties
-application-*.yml
-
-# Optional but very common – ignore all config files in resources
-src/main/resources/application*.properties
-src/main/resources/application*.yml

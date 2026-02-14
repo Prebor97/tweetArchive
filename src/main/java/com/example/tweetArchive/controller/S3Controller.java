@@ -14,7 +14,13 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/s3")
+@RequestMapping("v1/api/s3")
+@CrossOrigin(
+        origins = "ec2-16-170-163-247.eu-north-1.compute.amazonaws.com:3000",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS},
+        allowedHeaders = "*",
+        maxAge = 3600
+)
 public class S3Controller {
 
     @Value("${cloud.aws.s3.bucket}")
@@ -41,7 +47,7 @@ public class S3Controller {
         String jwtToken = authHeader.substring(7);
         List<String> userInfo = jwtUtils.getUserInfo(jwtToken);
         String user_id = userInfo.get(0);
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = user_id+"_"+StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String contentType = file.getContentType();
         long fileSize = file.getSize();
         InputStream inputStream = file.getInputStream();
