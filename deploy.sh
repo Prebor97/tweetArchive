@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Optional: uncomment for full debug output in GitHub Actions logs
+# set -x
+
 # ────────────────────────────────────────────────
 # 1. Export all environment variables passed from GitHub Actions
 #    Spring Boot reads these via System.getenv() or @Value
@@ -22,7 +25,7 @@ export SPRING_PROFILES_ACTIVE   # optional - set in workflow if needed
 # ────────────────────────────────────────────────
 # 2. Variables & constants
 # ────────────────────────────────────────────────
-APP_DIR="/home/${EC2_USER}/app"   # safer than variable expansion in cd
+APP_DIR="/home/ubuntu/app"           # fixed: hardcode ubuntu instead of ${EC2_USER}
 JAR_NAME="tweetarchive.jar"
 SERVICE_NAME="tweetarchive"
 
@@ -31,10 +34,13 @@ SERVICE_NAME="tweetarchive"
 # ────────────────────────────────────────────────
 if ! cd "$APP_DIR"; then
   echo "Error: Cannot change to directory $APP_DIR (does not exist or permission denied)"
+  ls -la /home/ubuntu || true
   exit 1
 fi
 
 echo "Working directory: $(pwd)"
+echo "Files currently in directory:"
+ls -la
 
 # ────────────────────────────────────────────────
 # 4. Stop the service gracefully (ignore if not running)
@@ -58,29 +64,45 @@ if [ -f "$JAR_NAME" ]; then
   mv "$JAR_NAME" "$BACKUP_NAME"
   echo "Backed up previous JAR → $BACKUP_NAME"
 else
-  echo "No previous $JAR_NAME found (first deployment?)"
+  echo "No previous $JAR_NAME found (first deployment or previous rename failed?)"
 fi
 
 # ────────────────────────────────────────────────
 # 6. Find and rename the newly uploaded JAR
 # ────────────────────────────────────────────────
 shopt -s nullglob
-new_jars=( *.jar )
+
+# Prefer exact Maven naming pattern first, then fallback to any .jar
+new_jars=( tweetArchive-*.jar *.jar )
 
 if [ ${#new_jars[@]} -eq 0 ]; then
-  echo "ERROR: No .jar file found in $APP_DIR after upload"
+  echo "ERROR: No .jar file found in $(pwd) after upload"
   echo "Directory listing:"
   ls -la
   exit 1
 fi
 
 if [ ${#new_jars[@]} -gt 1 ]; then
-  echo "Warning: Multiple JARs found (${new_jars[*]}) → using the first one: ${new_jars[0]}"
+  echo "Warning: Multiple JARs found: ${new_jars[*]}"
+  echo "→ Using the first one: ${new_jars[0]}"
 fi
 
+echo "Found uploaded JAR: ${new_jars[0]}"
+echo "Renaming to: $JAR_NAME"
+
 mv "${new_jars[0]}" "$JAR_NAME"
-echo "Renamed uploaded JAR → $JAR_NAME"
+
+# Verify rename succeeded
+if [ ! -f "$JAR_NAME" ]; then
+  echo "ERROR: Rename failed! File $JAR_NAME still does not exist"
+  ls -la
+  exit 1
+fi
+
+echo "Successfully renamed → $JAR_NAME"
 ls -lh "$JAR_NAME"   # show size & permissions for debugging
+echo "Current directory after rename:"
+ls -la
 
 # ────────────────────────────────────────────────
 # 7. Optional: Clean very old backups (keep last 5)
@@ -95,7 +117,7 @@ echo "Starting $SERVICE_NAME service..."
 sudo systemctl start "$SERVICE_NAME"
 
 # Give it time to start (adjust if your app is slow)
-sleep 8
+sleep 10
 
 # ────────────────────────────────────────────────
 # 9. Show detailed status + recent logs
