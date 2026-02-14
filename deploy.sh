@@ -5,29 +5,36 @@ set -euo pipefail
 # set -x
 
 # ────────────────────────────────────────────────
-# 1. Export all environment variables passed from GitHub Actions
-#    Spring Boot reads these via System.getenv() or @Value
+# 1. Variables & constants
 # ────────────────────────────────────────────────
-export DB_URL
-export DB_USERNAME
-export DB_PASSWORD
-export JWT_SECRET_KEY
-export AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY
-export AWS_REGION
-export AWS_S3_BUCKET
-export MAILUSERNAME
-export MAILPASSWORD
-export GROKAPIKEY
-export SPRING_JPA_HIBERNATE_DDL_AUTO
-export SPRING_PROFILES_ACTIVE   # optional - set in workflow if needed
+APP_DIR="/home/ubuntu/app"
+JAR_NAME="tweetArchive-0.0.1-SNAPSHOT.jar"
+SERVICE_NAME="tweetarchive"
+ENV_FILE="/home/ubuntu/app/.env"
 
 # ────────────────────────────────────────────────
-# 2. Variables & constants
+# 2. Create environment file for systemd
 # ────────────────────────────────────────────────
-APP_DIR="/home/ubuntu/app"           # fixed: hardcode ubuntu instead of ${EC2_USER}
-JAR_NAME="tweetarchive.jar"
-SERVICE_NAME="tweetarchive"
+echo "Creating environment file at $ENV_FILE"
+cat > "$ENV_FILE" << EOF
+DB_URL=${DB_URL}
+DB_USERNAME=${DB_USERNAME}
+DB_PASSWORD=${DB_PASSWORD}
+JWT_SECRET_KEY=${JWT_SECRET_KEY}
+AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+AWS_REGION=${AWS_REGION}
+AWS_S3_BUCKET=${AWS_S3_BUCKET}
+MAILUSERNAME=${MAILUSERNAME}
+MAILPASSWORD=${MAILPASSWORD}
+GROKAPIKEY=${GROKAPIKEY}
+SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
+SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+EOF
+
+# Secure the environment file (important!)
+chmod 600 "$ENV_FILE"
+echo "Environment file created and secured"
 
 # ────────────────────────────────────────────────
 # 3. Change directory with better error message
@@ -100,13 +107,12 @@ if [ ! -f "$JAR_NAME" ]; then
 fi
 
 echo "Successfully renamed → $JAR_NAME"
-ls -lh "$JAR_NAME"   # show size & permissions for debugging
+ls -lh "$JAR_NAME"
 echo "Current directory after rename:"
 ls -la
 
 # ────────────────────────────────────────────────
 # 7. Optional: Clean very old backups (keep last 5)
-#    Uncomment if disk space becomes an issue
 # ────────────────────────────────────────────────
 # find . -name "${JAR_NAME%.jar}-previous-*.jar" -type f | sort | head -n -5 | xargs -r rm -v
 
@@ -129,7 +135,7 @@ echo -e "\nRecent journal logs (last 40 lines):"
 sudo journalctl -u "$SERVICE_NAME" --no-pager --lines=40 || echo "No journal logs available"
 
 # ────────────────────────────────────────────────
-# 10. Optional: Simple health check (uncomment if you have /actuator/health)
+# 10. Optional: Simple health check
 # ────────────────────────────────────────────────
 # echo "Waiting for application to become healthy..."
 # for i in {1..12}; do
@@ -141,7 +147,6 @@ sudo journalctl -u "$SERVICE_NAME" --no-pager --lines=40 || echo "No journal log
 #   sleep 5
 # done
 # echo "Warning: Health check timed out after 60s"
-# exit 1 to end
 
 echo "Deployment finished. Check logs if needed:"
 echo "  sudo journalctl -u $SERVICE_NAME -f"
