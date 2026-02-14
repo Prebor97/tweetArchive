@@ -103,7 +103,7 @@ echo "Renaming to: $JAR_NAME"
 
 mv "${new_jars[0]}" "$JAR_NAME"
 
-# Verify rename succeeded
+# Verify if rename succeeded
 if [ ! -f "$JAR_NAME" ]; then
   echo "ERROR: Rename failed! File $JAR_NAME still does not exist"
   ls -la
