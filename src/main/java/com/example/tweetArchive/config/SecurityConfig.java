@@ -45,8 +45,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // IMPORTANT: List exact origins — do NOT use "*"
-        configuration.setAllowedOrigins(List.of("https://tweet-analyzer-three.vercel.app",                   // Vercel production
-                "https://kruger-marriage-floor-medication.trycloudflare.com" ));
+        configuration.setAllowedOrigins(List.of("https://tweet-analyzer-three.vercel.app" ));
 
         // Allow common methods
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
