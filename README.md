@@ -1,10 +1,12 @@
-# Tweet Archive
+Copy
+
+#  Tweet Archive
 
 A Spring Boot application that imports your Twitter/X archive into a PostgreSQL database, analyzes your tweets using Grok AI, and exposes everything through a secure REST API.
 
 ---
 
-## Table of Contents
+##  Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -20,11 +22,11 @@ A Spring Boot application that imports your Twitter/X archive into a PostgreSQL 
 
 ## Overview
 
-Twitter/X allows you to download your entire tweet history as an archive. This app takes that archive, processes the `tweet.json` file, and gives your data a new home stored in PostgreSQL, enriched with AI analysis via Grok, and accessible through a secure JWT-authenticated API.
+Twitter/X allows you to download your entire tweet history as an archive. This app takes that archive, processes the `tweet.json` file, and gives your data a new home — stored in PostgreSQL, enriched with AI analysis via Grok, and accessible through a secure JWT-authenticated API.
 
 ---
 
-## Features
+##  Features
 
 - **Twitter Archive Import** — Upload your `tweet.json` file from your Twitter data export
 - **S3 Upload** — Archive file is securely uploaded to an AWS S3 bucket before processing
@@ -37,7 +39,7 @@ Twitter/X allows you to download your entire tweet history as an archive. This a
 
 ---
 
-## Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -55,7 +57,7 @@ Twitter/X allows you to download your entire tweet history as an archive. This a
 
 ---
 
-## Architecture
+##  Architecture
 
 ```
 Twitter Archive (.zip)
@@ -88,7 +90,7 @@ Twitter Archive (.zip)
 
 ---
 
-## Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -124,7 +126,7 @@ mvn spring-boot:run
 
 ---
 
-## Configuration
+##  Configuration
 
 Set the following in `application.properties` or as environment variables:
 
@@ -158,7 +160,7 @@ spring.mail.password=your-email-password
 
 ---
 
-## 🔄 How It Works
+##  How It Works
 
 1. **Download your Twitter archive** from [Twitter Settings → Your Account → Download an archive of your data](https://twitter.com/settings/download_your_data)
 2. **Extract** the archive and locate `data/tweet.json`
@@ -171,16 +173,54 @@ spring.mail.password=your-email-password
 
 ##  API Endpoints
 
-> All endpoints (except `/auth/**`) require a valid JWT Bearer token.
+> All endpoints require a valid JWT `Authorization: Bearer <token>` header unless stated otherwise.
 
-| Method | Endpoint | Description |
+###  Auth
+
+| Method | Endpoint | Auth Required | Description |
+|---|---|---|---|
+| `POST` | `/v1/api/auth/register` |  | Register a new user |
+| `POST` | `/v1/api/auth/login` |  | Authenticate and receive a JWT token |
+
+###  S3 Upload
+
+| Method | Endpoint | Auth Required | Description |
+|---|---|---|---|
+| `POST` | `/v1/api/s3/upload` | | Upload your `tweet.json` file to S3. The file is keyed per user (`{userId}_tweet.json`) |
+
+###  Tweets
+
+| Method | Endpoint | Auth Required | Description |
+|---|---|---|---|
+| `POST` | `/v1/api/tweets/upload-job` |  | Trigger Spring Batch job to import tweets from S3 into the database |
+| `POST` | `/v1/api/tweets/analysis-job` |  | Trigger Grok AI analysis job with custom evaluation criteria |
+| `GET` | `/v1/api/tweets` |  | Get all imported tweets (paginated). Params: `page`, `size`, `sort` |
+| `GET` | `/v1/api/tweets/flagged` |  | Get tweets flagged by AI analysis (paginated). Params: `page`, `size`, `sort` |
+| `GET` | `/v1/api/tweets/criteria` |  | List all saved evaluation criteria |
+| `DELETE` | `/v1/api/tweets/{id}` |  | Delete a specific tweet by ID |
+
+### Pagination Query Parameters
+
+All paginated endpoints (`/tweets`, `/tweets/flagged`) accept:
+
+| Param | Default | Description |
 |---|---|---|
-| `POST` | `/auth/register` | Register a new user |
-| `POST` | `/auth/login` | Authenticate and receive a JWT |
-| `POST` | `/tweets/upload` | Upload a `tweet.json` file |
-| `GET` | `/tweets` | Retrieve all imported tweets |
-| `GET` | `/tweets/{id}` | Get a specific tweet |
-| `GET` | `/tweets/analysis` | Get Grok AI analysis results |
+| `page` | `0` | Page number (zero-indexed) |
+| `size` | `20` | Number of results per page |
+| `sort` | `desc` | Sort order (`asc` or `desc`) |
+
+### Analysis Job Request Body
+
+`POST /v1/api/tweets/analysis-job` expects a JSON body:
+
+```json
+{
+  "criteriaName": "Toxicity Check",
+  "criteriaList": ["hate speech", "profanity", "harassment"]
+}
+```
+
+If a criteria set with the same name already exists for the user, the existing one is reused.
 
 ---
 
@@ -195,4 +235,4 @@ This project uses a CI/CD pipeline that automates:
 
 Pipeline configuration can be found in `.github/workflows/` (GitHub Actions) or your equivalent CI config file.
 
---- 
+---
