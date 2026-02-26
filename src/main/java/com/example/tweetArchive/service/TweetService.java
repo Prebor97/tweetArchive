@@ -99,8 +99,8 @@ public class TweetService {
         return ResponseEntity.ok(new TweetResponse("Tweet deleted",LocalDateTime.now()));
     }
 
-    public ResponseEntity<List<EvaluationCriteria>> getAllEvaluationCriteria(){
-        return ResponseEntity.ok(evaluationCriteriaRepository.findAll());
+    public ResponseEntity<List<EvaluationCriteria>> getAllEvaluationCriteria(String id){
+        return ResponseEntity.ok(evaluationCriteriaRepository.findByUserId(id));
     }
 
 }

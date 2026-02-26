@@ -127,8 +127,14 @@ public class TwitterController {
     }
 
     @GetMapping("/criteria")
-    public ResponseEntity<List<EvaluationCriteria>> getAllCriteria(){
-        return tweetService.getAllEvaluationCriteria();
+    public ResponseEntity<List<EvaluationCriteria>> getAllCriteria(@RequestHeader(name = "Authorization", required = false) String authHeader){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String token = authHeader.substring(7);
+        List<String> userInfo = jwtUtils.getUserInfo(token);
+        String userId = userInfo.get(0);
+        return tweetService.getAllEvaluationCriteria(userId);
     }
 
     @GetMapping()

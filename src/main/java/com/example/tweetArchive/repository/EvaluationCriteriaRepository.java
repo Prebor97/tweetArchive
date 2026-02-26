@@ -12,4 +12,6 @@ public interface EvaluationCriteriaRepository extends JpaRepository<EvaluationCr
     boolean existsByCriteriaNameAndUserId(String criteriaName, String userId);
 
     Optional<EvaluationCriteria> findByCriteriaNameAndUserId(String criteriaName, String userId);
+
+    List<EvaluationCriteria> findByUserId(String userId);
 }
