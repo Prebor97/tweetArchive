@@ -178,25 +178,25 @@ spring.mail.password=your-email-password
 
 | Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
-| `POST` | `/v1/api/auth/register` |  | Register a new user |
-| `POST` | `/v1/api/auth/login` | | Authenticate and receive a JWT token |
+| `POST` | `/v1/api/auth/register` | No | Register a new user |
+| `POST` | `/v1/api/auth/login` | No | Authenticate and receive a JWT token |
 
 ###  S3 Upload
 
 | Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
-| `POST` | `/v1/api/s3/upload` |  | Upload your `tweet.json` file to S3. The file is keyed per user (`{userId}_tweet.json`) |
+| `POST` | `/v1/api/s3/upload` | Yes | Upload your `tweet.json` file to S3. The file is keyed per user (`{userId}_tweet.json`) |
 
 ###  Tweets
 
 | Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
-| `POST` | `/v1/api/tweets/upload-job` |  | Trigger Spring Batch job to import tweets from S3 into the database |
-| `POST` | `/v1/api/tweets/analysis-job` |  | Trigger Grok AI analysis job with custom evaluation criteria |
-| `GET` | `/v1/api/tweets` |  | Get all imported tweets (paginated). Params: `page`, `size`, `sort` |
-| `GET` | `/v1/api/tweets/flagged` |  | Get tweets flagged by AI analysis (paginated). Params: `page`, `size`, `sort` |
-| `GET` | `/v1/api/tweets/criteria` |  | List all saved evaluation criteria |
-| `DELETE` | `/v1/api/tweets/{id}` |  | Delete a specific tweet by ID |
+| `POST` | `/v1/api/tweets/upload-job` | Yes | Trigger Spring Batch job to import tweets from S3 into the database |
+| `POST` | `/v1/api/tweets/analysis-job` | Yes | Trigger Grok AI analysis job with custom evaluation criteria |
+| `GET` | `/v1/api/tweets` | Yes | Get all imported tweets (paginated). Params: `page`, `size`, `sort` |
+| `GET` | `/v1/api/tweets/flagged` | Yes | Get tweets flagged by AI analysis (paginated). Params: `page`, `size`, `sort` |
+| `GET` | `/v1/api/tweets/criteria` | Yes | List all saved evaluation criteria |
+| `DELETE` | `/v1/api/tweets/{id}` | Yes | Delete a specific tweet by ID |
 
 ### Pagination Query Parameters
 
