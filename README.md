@@ -1,4 +1,3 @@
-Copy
 
 #  Tweet Archive
 
