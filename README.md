@@ -180,13 +180,13 @@ spring.mail.password=your-email-password
 | Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
 | `POST` | `/v1/api/auth/register` |  | Register a new user |
-| `POST` | `/v1/api/auth/login` |  | Authenticate and receive a JWT token |
+| `POST` | `/v1/api/auth/login` | | Authenticate and receive a JWT token |
 
 ###  S3 Upload
 
 | Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
-| `POST` | `/v1/api/s3/upload` | | Upload your `tweet.json` file to S3. The file is keyed per user (`{userId}_tweet.json`) |
+| `POST` | `/v1/api/s3/upload` |  | Upload your `tweet.json` file to S3. The file is keyed per user (`{userId}_tweet.json`) |
 
 ###  Tweets
 
